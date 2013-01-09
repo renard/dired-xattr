@@ -151,10 +151,17 @@ the filename as key ans a `dired-xattr' structure as value."
 	  for details = (apply 'make-dired-xattr details-plist)
 	  collect (cons (dired-xattr-kMDItemFSName details) details))))
 
-(defun dired-xattr-add-overlay()
-  ""
-  (let ((lines (count-lines (point-min) (point-max))))
-	
+;;;###autoload
+(defun dired-xattr-add-overlay(&optional force)
+  "Colorize the perm column from current `dired' buffer according
+MacOSX Finder label colors.
+
+Does nothing if `dired-default-directory' is not a local
+directory of if buffer has more that
+`dired-xattr-max-buffer-lines' lines."
+  (interactive)
+  (let ((lines (count-lines (point-min) (point-max)))
+	(force (or force current-prefix-arg)))
     (when (and
 	   (not
 	    (tramp-file-name-real-host
@@ -162,8 +169,9 @@ the filename as key ans a `dired-xattr' structure as value."
 				 (dired-default-directory)))
 		 (tramp-dissect-file-name
 		  (concat "/:" (dired-default-directory)) 1))))
-	   (< lines 300))
-    
+	   (or force
+	       (< lines dired-xattr-max-buffer-lines)))
+
       (let ((xattrs (dired-xattr-get-from-dir
 		     (dired-default-directory)
 		     '("kMDItemFSLabel" "kMDItemFSName"))))
