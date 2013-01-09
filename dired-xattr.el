@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 00:49:12
+;; Last changed: 2013-01-10 00:57:24
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -179,8 +179,11 @@ directory of if buffer has more that
 	  (goto-char (point-min))
 	  (dired-initial-position (dired-default-directory))
 	  (while (< (point) (point-max))
-	    (let* ((filename (file-name-nondirectory
-			      (dired-file-name-at-point)))
+	    (let* ((fnap (dired-file-name-at-point))
+		   (filename (file-name-nondirectory
+			      (if (file-directory-p fnap)
+				  (substring fnap 0 -1)
+				(dired-file-name-at-point))))
 		   (attr (cdr (assoc filename xattrs)))
 		   (face (intern
 			  (format "dired-xattr-attribute-%s"
