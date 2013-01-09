@@ -1,18 +1,21 @@
-;;; dired-xattr.el --- 
+;;; dired-xattr.el --- Handle MacOSX Finder color label in dired
 
 ;; Copyright © 2013 Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 00:10:32
+;; Last changed: 2013-01-10 00:49:12
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
 
 ;;; Commentary:
-;; 
-
+;;
+;;  To use dired-xattr:
+;;
+;;  (require 'dired-xattr)
+;;  (add-hook 'dired-after-readin-hook 'dired-xattr-add-overlay)
 
 ;;; Code:
 
@@ -61,7 +64,11 @@
   :type 'string
   :group 'dired-xattr)
 
-
+(defcustom dired-xattr-max-buffer-lines 300
+ "Buffer lines limit before `dired-xattr-add-overlay' is skipped."
+  :type 'interger
+  :group 'dired-xattr)
+  
 
 (defcustom dired-xattr-mdls-attributes
   '("kMDItemContentCreationDate"
@@ -122,7 +129,8 @@
 
 
 (defun dired-xattr-get-from-dir (dir &optional attrs)
-  ""
+  "Read attributes for all files in DIR. Return an ALIST having
+the filename as key ans a `dired-xattr' structure as value."
   (let* ((attrs (or attrs dired-xattr-mdls-attributes))
 	 (size (length attrs))
 	 (attrs-func (loop for x in attrs
@@ -176,8 +184,6 @@
 	      (when (boundp face)
 		(overlay-put ov 'face (cons 'background-color (eval face)))))
 	    (forward-line 1)))))))
-
-(add-hook 'dired-after-readin-hook 'dired-xattr-add-overlay)
 
 (provide 'dired-xattr)
 
