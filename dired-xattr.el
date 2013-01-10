@@ -196,7 +196,7 @@ directory of if buffer has more that
 		   (attr (gethash filename xattrs))
 		   (face (intern
 			  (format "dired-xattr-attribute-%s"
-				  (if (and (boundp 'attr) attr)
+				  (if attr
 				      (dired-xattr-kMDItemFSLabel attr)
 				    "0"))))
 		   (ov (make-overlay (+ 2 (point-at-bol))
