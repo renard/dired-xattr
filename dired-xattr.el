@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 10:01:40
+;; Last changed: 2013-01-10 10:38:44
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -149,13 +149,15 @@ the filename as key ans a `dired-xattr' structure as value."
 			 dired-xattr-mdls-bin
 			 (mapconcat #'identity attrs " -name ")
 			 (shell-quote-argument (expand-file-name dir))))
-		"\0")))
+		"\0"))
+	 (ret (make-hash-table :test 'equal)))
     (loop for items on data by (lambda (x) (subseq x size))
 	  for details-plist = (loop for i below size
 				   nconc (list (nth i attrs-int)
 					       (nth i items)))
 	  for details = (apply 'make-dired-xattr details-plist)
-	  collect (cons (dired-xattr-kMDItemFSName details) details))))
+	  do  (puthash (dired-xattr-kMDItemFSName details) details ret))
+    ret))
 
 ;;;###autoload
 (defun dired-xattr-add-overlay(&optional force)
@@ -190,7 +192,7 @@ directory of if buffer has more that
 			      (if (file-directory-p fnap)
 				  (substring fnap 0 -1)
 				(dired-file-name-at-point))))
-		   (attr (cdr (assoc filename xattrs)))
+		   (attr (gethash filename xattrs))
 		   (face (intern
 			  (format "dired-xattr-attribute-%s"
 				  (if (and (boundp 'attr) attr)
