@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 12:20:22
+;; Last changed: 2013-01-10 15:56:29
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -106,7 +106,15 @@
   :type 'list
   :group 'dired-xattr)
 
-
+(defconst dired-xattr-labels
+  '(:1 "Grey"
+    :2 "Green"
+    :3 "Pupple"
+    :4 "Blue"
+    :5 "Yellow"
+    :6 "Red"
+    :7 "Orange")
+  "Use to convert label number to name")
 
 (defstruct dired-xattr
   kMDItemContentCreationDate
@@ -184,7 +192,8 @@ directory of if buffer has more that
 
       (let ((xattrs (dired-xattr-get-from-dir
 		     (dired-default-directory)
-		     '("kMDItemFSLabel" "kMDItemFSName"))))
+		     '("kMDItemFSLabel" "kMDItemFSName")))
+	    (inhibit-read-only t))
 	(save-excursion
 	  (goto-char (point-min))
 	  (dired-initial-position (dired-default-directory))
@@ -195,15 +204,23 @@ directory of if buffer has more that
 				  (substring fnap 0 -1)
 				(dired-file-name-at-point))))
 		   (attr (gethash filename xattrs))
+		   (label (if attr
+			      (dired-xattr-kMDItemFSLabel attr)
+			    "0"))
 		   (face (intern
 			  (format "dired-xattr-attribute-%s"
-				  (if attr
-				      (dired-xattr-kMDItemFSLabel attr)
-				    "0"))))
-		   (ov (make-overlay (+ 2 (point-at-bol))
-				     (+ 12 (point-at-bol)))))
+				 label )))
+		   (beg (+ 1 (point-at-bol)))
+		   (end (+ 2 (point-at-bol)))
+		   (ov (make-overlay beg end)))
 	      (when (boundp face)
-		(overlay-put ov 'face (cons 'background-color (eval face)))))
+		(overlay-put ov 'face (cons 'background-color (eval face)))
+		(add-text-properties
+		 beg end
+		 `(help-echo
+		   ,(format "Label: %s"
+			    (plistget dired-xattr-labels
+				       (intern (concat ":" label))))))))
 	    (forward-line 1)))))))
 
 (provide 'dired-xattr)
