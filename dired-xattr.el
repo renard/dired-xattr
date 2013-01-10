@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 10:38:44
+;; Last changed: 2013-01-10 12:16:33
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -144,12 +144,13 @@ the filename as key ans a `dired-xattr' structure as value."
 	 (attrs-int (loop for x in attrs
 			  collect (intern (concat ":" x))))
 	 (data (split-string
-		(shell-command-to-string
-		 (format "%s -name %s -raw %s/*"
-			 dired-xattr-mdls-bin
-			 (mapconcat #'identity attrs " -name ")
-			 (shell-quote-argument (expand-file-name dir))))
-		"\0"))
+		(ucs-normalize-NFC-string
+		 (shell-command-to-string
+		  (format "%s -name %s -raw %s/*"
+			  dired-xattr-mdls-bin
+			  (mapconcat #'identity attrs " -name ")
+			  (shell-quote-argument (expand-file-name dir))))
+		 "\0")))
 	 (ret (make-hash-table :test 'equal)))
     (loop for items on data by (lambda (x) (subseq x size))
 	  for details-plist = (loop for i below size
