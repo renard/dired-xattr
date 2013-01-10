@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 12:16:33
+;; Last changed: 2013-01-10 12:17:46
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -161,7 +161,7 @@ the filename as key ans a `dired-xattr' structure as value."
     ret))
 
 ;;;###autoload
-(defun dired-xattr-add-overlay(&optional force)
+(defun dired-xattr-add-overlay (&optional force)
   "Colorize the perm column from current `dired' buffer according
 MacOSX Finder label colors.
 
