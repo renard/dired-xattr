@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 15:57:44
+;; Last changed: 2013-01-10 15:58:16
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -219,7 +219,7 @@ directory of if buffer has more that
 		 beg end
 		 `(help-echo
 		   ,(format "Label: %s"
-			    (plistget dired-xattr-labels
+			    (plist-get dired-xattr-labels
 				       (intern (concat ":" label))))))))
 	    (forward-line 1)))))))
 
