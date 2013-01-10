@@ -5,7 +5,7 @@
 ;; Author: Sébastien Gross <seb•ɑƬ•chezwam•ɖɵʈ•org>
 ;; Keywords: emacs, 
 ;; Created: 2013-01-09
-;; Last changed: 2013-01-10 00:57:24
+;; Last changed: 2013-01-10 10:01:40
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 
 ;; This file is NOT part of GNU Emacs.
@@ -18,6 +18,12 @@
 ;;  (add-hook 'dired-after-readin-hook 'dired-xattr-add-overlay)
 
 ;;; Code:
+
+
+(eval-when-compile
+  (require 'cl)
+  (require 'tramp)
+  (require 'dired))
 
 (defgroup dired-xattr nil
   "Manipulate MacOSX extanded attributes in Dired."
